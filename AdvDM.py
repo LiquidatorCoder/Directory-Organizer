@@ -3,12 +3,39 @@ import time
 from datetime import datetime
 from win10toast import ToastNotifier
 from zipfile import ZipFile
+import PySimpleGUI as sg
+
+try:
+    cookies = open("Cookie.txt","r")
+except:
+    cookies = open("Cookie.txt","w")
+    cookies.write("False\n")
+    cookies.close()
+    cookies = open("Cookie.txt","r")
+
+cookie=cookies.readlines()
+if cookie[0]=="False\n":
+    fname = sg.popup_get_folder('Directory to open')
+    if not fname:
+        sg.popup("Cancel", "No Directory supplied")
+        raise SystemExit("Cancelling: no Directory supplied")
+    else:
+        path = str(fname)
+        cookies.close()
+        os.remove("Cookie.txt")
+        cookies = open("Cookie.txt","w")
+        cookies.writelines(["True\n",path])
+        cookies.close()
+elif cookie[0]=="True\n":
+    path = str(cookie[1])
+    cookies.close()
+
+
+
+
 toaster = ToastNotifier()
 toaster.show_toast("Advanced Download Manager","Service Started",threaded=True,duration=None)
 
-
-#path = "C:/Users/Asus/Downloads/xwvfsuo9dgqiucx165uq"
-path = "C:/Users/Asus/Desktop/Downloads"
 def Index_generator(path):
     files = []
     subdirs = []
