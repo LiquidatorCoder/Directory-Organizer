@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 from win10toast import ToastNotifier
 toaster = ToastNotifier()
-toaster.show_toast("Advanced Download Manager","Service Started")
+toaster.show_toast("Advanced Download Manager","Service Started",threaded=True,duration=None)
 
 
 #path = "C:/Users/Asus/Downloads/xwvfsuo9dgqiucx165uq"
@@ -85,6 +85,7 @@ fileTypes["Web Codes"] = ["htm", "html", "css", "js", "php", "xml"]
 #print(datetime.fromtimestamp(file_mtime),files[0])
 #b=Index_generator(path)
 while True:
+    dt = datetime.today()
     a=Index_generator(path)
     time.sleep(1)
     b=Index_generator(path)
@@ -93,10 +94,10 @@ while True:
         #print("Deleted file : ",data['deleted'])
         if len(data['deleted'])==1:
             #print(len(data['deleted']),"file deleted.")
-            toaster.show_toast("Advanced Download Manager",str(len(data['deleted']))+" file deleted.")
+            toaster.show_toast("Advanced Download Manager",str(len(data['deleted']))+" file deleted.",threaded=True,duration=None)
         else:
             #print(len(data['deleted']),"files deleted.")
-            toaster.show_toast("Advanced Download Manager",str(len(data['deleted']))+" files deleted.")
+            toaster.show_toast("Advanced Download Manager",str(len(data['deleted']))+" files deleted.",threaded=True,duration=None)
     if data['created']!=[]:
         #print("Created file : ",data['created'])
         for file in data['created']:
@@ -107,11 +108,12 @@ while True:
                     if ext in fileTypes[filetype]:
                         if ext=="crdownload":
                             #print("Detected Downloading")
-                            toaster.show_toast("Advanced Download Manager","Download Started")
+                            toaster.show_toast("Advanced Download Manager","Download Started",threaded=True,duration=None)
                         else:
                             try:
                                 path2=path+"/"+str(filetype)
                                 path3=path+"/"+str(filetype)+"/"+str(file)
+                                path4=path+"/"+str(filetype)+"/(New"+str(dt.second)+str(dt.microsecond)+")"+str(file)
                                 print("path2 : "+path2)
                                 os.mkdir(path2)
                             except OSError:
@@ -123,10 +125,10 @@ while True:
                                 print("path3 : "+path3)
                                 os.rename(file2, path3)
                                 #print("Created file : ",path3)
-                                toaster.show_toast("Advanced Download Manager","File Downloaded : "+file)
+                                toaster.show_toast("Advanced Download Manager","File Downloaded : "+file,threaded=True,duration=None)
                             except OSError:
                                 #print("Created file : ",file2)
-                                pass
+                                os.rename(file2, path4)
     if data['updated']!=[]:
         #print("Updated file : ",data['updated'])
         #print("Created file : ",data['created'])
@@ -143,6 +145,7 @@ while True:
                             try:
                                 path2=path+"/"+str(filetype)
                                 path3=path+"/"+str(filetype)+"/"+str(file)
+                                path4=path+"/"+str(filetype)+"/(New"+str(dt.second)+str(dt.microsecond)+")"+str(file)
                                 print("path2 : "+path2)
                                 os.mkdir(path2)
                             except OSError:
@@ -154,15 +157,15 @@ while True:
                                 print("path3 : "+path3)
                                 os.rename(file2, path3)
                                 #print("Created file : ",path3)
-                                toaster.show_toast("Advanced Download Manager","File Downloaded : "+file)
+                                toaster.show_toast("Advanced Download Manager","File Downloaded : "+file,threaded=True,duration=None)
                             except OSError:
                                 #print("Created file : ",file2)
-                                pass
+                                os.rename(file2, path4)
     if data['deleted_dirs']!=[]:
         #print("Deleted Directory : ",data['deleted_dirs'])
         if len(data['deleted_dirs'])==1:
             #print(len(data['deleted_dirs']),"folder deleted.")
-            toaster.show_toast("Advanced Download Manager",str(len(data['deleted_dirs']))+" folder deleted.")
+            toaster.show_toast("Advanced Download Manager",str(len(data['deleted_dirs']))+" folder deleted.",threaded=True,duration=None)
         else:
             #print(len(data['deleted_dirs']),"folders deleted.")
-            toaster.show_toast("Advanced Download Manager",str(len(data['deleted_dirs']))+" folders deleted.")
+            toaster.show_toast("Advanced Download Manager",str(len(data['deleted_dirs']))+" folders deleted.",threaded=True,duration=None)
