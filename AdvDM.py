@@ -2,6 +2,7 @@ import os
 import time
 from datetime import datetime
 from win10toast import ToastNotifier
+from zipfile import ZipFile
 toaster = ToastNotifier()
 toaster.show_toast("Advanced Download Manager","Service Started",threaded=True,duration=None)
 
@@ -109,6 +110,37 @@ while True:
                         if ext=="crdownload":
                             #print("Detected Downloading")
                             toaster.show_toast("Advanced Download Manager","Download Started",threaded=True,duration=None)
+                        elif ext=="zip":
+                            file2=path+"/"+str(file)
+                            print("file2 : "+file2)
+                            try:
+                                with ZipFile(file2, 'r') as zip:
+                                    zip.printdir() 
+                                    print('Extracting all the files now...') 
+                                    zip.extractall(path=path) 
+                                    print('Done!') 
+                                os.remove(file2)
+                            except:
+                                print('Zip can\'t be extracted.')
+                                # try:
+                                #     path2=path+"/"+str(filetype)
+                                #     path3=path+"/"+str(filetype)+"/"+str(file)
+                                #     path4=path+"/"+str(filetype)+"/(New"+str(dt.second)+str(dt.microsecond)+")"+str(file)
+                                #     print("path2 : "+path2)
+                                #     os.mkdir(path2)
+                                # except OSError:
+                                #     #print ("Creation of the directory %s failed" % path2)
+                                #     pass
+                                # file2=path+"/"+str(file)
+                                # try:
+                                #     print("file2 : "+file2)
+                                #     print("path3 : "+path3)
+                                #     os.rename(file2, path3)
+                                #     #print("Created file : ",path3)
+                                #     toaster.show_toast("Advanced Download Manager","File Downloaded : "+file,threaded=True,duration=None)
+                                # except OSError:
+                                #     #print("Created file : ",file2)
+                                #     os.rename(file2, path4)
                         else:
                             try:
                                 path2=path+"/"+str(filetype)
@@ -141,6 +173,37 @@ while True:
                         if ext=="crdownload":
                             #print("Detected Downloading")
                             pass
+                        elif ext=="zip":
+                            file2=path+"/"+str(file)
+                            print("file2 : "+file2)
+                            try:
+                                with ZipFile(file2, 'r') as zip:
+                                    zip.printdir() 
+                                    print('Extracting all the files now...') 
+                                    zip.extractall(path=path) 
+                                    print('Done!') 
+                                os.remove(file2)
+                            except:
+                                print('Zip can\'t be extracted.')
+                                # try:
+                                #     path2=path+"/"+str(filetype)
+                                #     path3=path+"/"+str(filetype)+"/"+str(file)
+                                #     path4=path+"/"+str(filetype)+"/(New"+str(dt.second)+str(dt.microsecond)+")"+str(file)
+                                #     print("path2 : "+path2)
+                                #     os.mkdir(path2)
+                                # except OSError:
+                                #     #print ("Creation of the directory %s failed" % path2)
+                                #     pass
+                                # file2=path+"/"+str(file)
+                                # try:
+                                #     print("file2 : "+file2)
+                                #     print("path3 : "+path3)
+                                #     os.rename(file2, path3)
+                                #     #print("Created file : ",path3)
+                                #     toaster.show_toast("Advanced Download Manager","File Downloaded : "+file,threaded=True,duration=None)
+                                # except OSError:
+                                #     #print("Created file : ",file2)
+                                #     os.rename(file2, path4)
                         else:
                             try:
                                 path2=path+"/"+str(filetype)
