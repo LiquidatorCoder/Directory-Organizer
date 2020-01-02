@@ -1,3 +1,5 @@
+[![GitHub license](https://img.shields.io/github/license/LiquidatorCoder/Directory-Organizer?color=green&label=license)](https://github.com/LiquidatorCoder/Directory-Organizer/blob/master/LICENSE.md)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/y/LiquidatorCoder/Directory-Organizer?label=commits)
 # Easi File Organizer
 
 This is a **Python3** Project which organizes any file or folder which is inside a directory as soon as the file is downloaded or modified. This can be used to manage downloads folder easily.
