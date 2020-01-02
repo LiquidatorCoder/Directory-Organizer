@@ -34,7 +34,7 @@ elif cookie[0]=="True\n":
 
 
 toaster = ToastNotifier()
-toaster.show_toast("Advanced Download Manager","Service Started",threaded=True,duration=None)
+toaster.show_toast("Easi","Service Started",threaded=True,icon_path=iconpath,duration=None)
 
 def Index_generator(path):
     files = []
@@ -122,10 +122,10 @@ while True:
         #print("Deleted file : ",data['deleted'])
         if len(data['deleted'])==1:
             #print(len(data['deleted']),"file deleted.")
-            toaster.show_toast("Advanced Download Manager",str(len(data['deleted']))+" file deleted.",threaded=True,duration=None)
+            toaster.show_toast("Easi",str(len(data['deleted']))+" file deleted.",threaded=True,icon_path=iconpath,duration=None)
         else:
             #print(len(data['deleted']),"files deleted.")
-            toaster.show_toast("Advanced Download Manager",str(len(data['deleted']))+" files deleted.",threaded=True,duration=None)
+            toaster.show_toast("Easi",str(len(data['deleted']))+" files deleted.",threaded=True,icon_path=iconpath,duration=None)
     if data['created']!=[]:
         #print("Created file : ",data['created'])
         for file in data['created']:
@@ -136,7 +136,7 @@ while True:
                     if ext in fileTypes[filetype]:
                         if ext=="crdownload":
                             #print("Detected Downloading")
-                            toaster.show_toast("Advanced Download Manager","Download Started",threaded=True,duration=None)
+                            toaster.show_toast("Easi","Download Started",threaded=True,icon_path=iconpath,duration=None)
                         elif ext=="zip":
                             file2=path+"/"+str(file)
                             print("file2 : "+file2)
@@ -164,7 +164,7 @@ while True:
                                 #     print("path3 : "+path3)
                                 #     os.rename(file2, path3)
                                 #     #print("Created file : ",path3)
-                                #     toaster.show_toast("Advanced Download Manager","File Downloaded : "+file,threaded=True,duration=None)
+                                #     toaster.show_toast("Easi","File Downloaded : "+file,threaded=True,icon_path=iconpath,duration=None)
                                 # except OSError:
                                 #     #print("Created file : ",file2)
                                 #     os.rename(file2, path4)
@@ -184,7 +184,7 @@ while True:
                                 print("path3 : "+path3)
                                 os.rename(file2, path3)
                                 #print("Created file : ",path3)
-                                toaster.show_toast("Advanced Download Manager","File Downloaded : "+file,threaded=True,duration=None)
+                                toaster.show_toast("Easi","File Downloaded : "+file,threaded=True,icon_path=iconpath,duration=None)
                             except OSError:
                                 #print("Created file : ",file2)
                                 os.rename(file2, path4)
@@ -227,7 +227,7 @@ while True:
                                 #     print("path3 : "+path3)
                                 #     os.rename(file2, path3)
                                 #     #print("Created file : ",path3)
-                                #     toaster.show_toast("Advanced Download Manager","File Downloaded : "+file,threaded=True,duration=None)
+                                #     toaster.show_toast("Easi","File Downloaded : "+file,threaded=True,icon_path=iconpath,duration=None)
                                 # except OSError:
                                 #     #print("Created file : ",file2)
                                 #     os.rename(file2, path4)
@@ -247,7 +247,7 @@ while True:
                                 print("path3 : "+path3)
                                 os.rename(file2, path3)
                                 #print("Created file : ",path3)
-                                toaster.show_toast("Advanced Download Manager","File Downloaded : "+file,threaded=True,duration=None)
+                                toaster.show_toast("Easi","File Downloaded : "+file,threaded=True,icon_path=iconpath,duration=None)
                             except OSError:
                                 #print("Created file : ",file2)
                                 os.rename(file2, path4)
@@ -255,7 +255,7 @@ while True:
         #print("Deleted Directory : ",data['deleted_dirs'])
         if len(data['deleted_dirs'])==1:
             #print(len(data['deleted_dirs']),"folder deleted.")
-            toaster.show_toast("Advanced Download Manager",str(len(data['deleted_dirs']))+" folder deleted.",threaded=True,duration=None)
+            toaster.show_toast("Easi",str(len(data['deleted_dirs']))+" folder deleted.",threaded=True,icon_path=iconpath,duration=None)
         else:
             #print(len(data['deleted_dirs']),"folders deleted.")
-            toaster.show_toast("Advanced Download Manager",str(len(data['deleted_dirs']))+" folders deleted.",threaded=True,duration=None)
+            toaster.show_toast("Easi",str(len(data['deleted_dirs']))+" folders deleted.",threaded=True,icon_path=iconpath,duration=None)
