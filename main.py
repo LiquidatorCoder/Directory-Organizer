@@ -3,7 +3,10 @@ import time
 from datetime import datetime
 from win10toast import ToastNotifier
 from zipfile import ZipFile
-import PySimpleGUI as sg
+from tkinter import filedialog
+from tkinter import *
+import ctypes   
+
 
 try:
     cookies = open("Cookie.txt","r")
@@ -15,10 +18,13 @@ except:
 
 cookie=cookies.readlines()
 if cookie[0]=="False\n":
-    fname = sg.popup_get_folder('Directory to open')
+    root = Tk()
+    root.withdraw()
+    folder_selected = filedialog.askdirectory()
+    fname = folder_selected
     if not fname:
-        sg.popup("Cancel", "No Directory supplied")
-        raise SystemExit("Cancelling: no Directory supplied")
+        ctypes.windll.user32.MessageBoxW(0, "No Directory Supplied!", "Cancel", 0)
+        raise SystemExit("Cancelling: No Directory supplied")
     else:
         path = str(fname)
         cookies.close()
