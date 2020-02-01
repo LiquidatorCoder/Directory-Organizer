@@ -1,47 +1,25 @@
+#Code developed and maintained by Abhay Maurya
+
+#Some important modules to import 
+
 import os
 import time
 from datetime import datetime
-from win10toast import ToastNotifier
+from win10toast import ToastNotifier    #for toast notifications
 from zipfile import ZipFile
-import PySimpleGUI as sg
+from tkinter import filedialog      #for file browse dialog box
+from tkinter import *       #for gui
+import ctypes           #for windows message box 
 
-try:
-    cookies = open("Cookie.txt","r")
-except:
-    cookies = open("Cookie.txt","w")
-    cookies.write("False\n")
-    cookies.close()
-    cookies = open("Cookie.txt","r")
-
-cookie=cookies.readlines()
-if cookie[0]=="False\n":
-    fname = sg.popup_get_folder('Directory to open')
-    if not fname:
-        sg.popup("Cancel", "No Directory supplied")
-        raise SystemExit("Cancelling: no Directory supplied")
-    else:
-        path = str(fname)
-        cookies.close()
-        os.remove("Cookie.txt")
-        cookies = open("Cookie.txt","w")
-        cookies.writelines(["True\n",path])
-        cookies.close()
-elif cookie[0]=="True\n":
-    path = str(cookie[1])
-    cookies.close()
-
-
-
-
-toaster = ToastNotifier()
-toaster.show_toast("Easi","Service Started",threaded=True,icon_path=iconpath,duration=None)
+#Some UDFs
+#Index Generator generates index of all the files in the directory
 
 def Index_generator(path):
     files = []
     subdirs = []
-    index = {}
+    index = {}  #Index Dictionary
 
-    #print(next(os.walk(path)))
+    #Populating Files, Subdirs
 
     for root, dirs, filenames in os.walk(path):
         for subdir in dirs:
@@ -54,6 +32,8 @@ def Index_generator(path):
         index[f] = os.path.getmtime(os.path.join(path, files[0]))
 
     return dict(files=files, subdirs=subdirs, index=index)
+
+#This UDF computes difference between two different indexes
 
 def compute_diff(dir_base, dir_cmp):
     data = {}
@@ -68,11 +48,12 @@ def compute_diff(dir_base, dir_cmp):
 
     return data
 
+#Main Data Type Dictionary
+
 fileTypes = {}
 fileTypes["Images"] = ["jpg", "gif", "png", "jpeg", "bmp", "dmg"]
 fileTypes["Audio"] = ["mp3", "wav", "wma", "aiff", "flac", "aac", "xspf", "mid"]
-fileTypes["Video"] = ["m4v", "3gp", "flv", "mpeg", "mov", "mpg", "mpe", "wmv", \
-                          "MOV", "mp4", "mkv", "m2ts", "sfl"]
+fileTypes["Video"] = ["m4v", "3gp", "flv", "mpeg", "mov", "mpg", "mpe", "wmv", "MOV", "mp4", "mkv", "m2ts", "sfl"]
 fileTypes["Documents and Spreadsheets"] = ["accdb", "_xls", "mdb", "one","doc", "docx", "xls", "xlsx", "csi", "csv", "txt", "ppt", "pptx", "pdf", "rtf"]
 fileTypes["Programs"] = ["py", "whl", "pyc", "pyproject", "cpp", "c", "m", "o", "h"]
 fileTypes["Executables"] = ["exe"]
@@ -88,7 +69,6 @@ fileTypes["Torrent"] = ["torrent"]
 fileTypes["Compressed"] = ["zip", "tar", "7z", "rar", "bz2", "gz"]
 fileTypes["ISO Files"] = ["vmdk", "ova", "iso"]
 fileTypes["Chrome Extensions"] = ["crx"]
-#fileTypes["Chrome Downloads"] = ["crdownload"]
 fileTypes["SFK Files"] = ["sfk"]
 fileTypes["VEP Files"] = ["vep"]
 fileTypes["BAK Files"] = ["bak"]
@@ -108,24 +88,97 @@ fileTypes["Shortcuts"] = ["lnk"]
 fileTypes["FL Studio Projects"] = ["flp"]
 fileTypes["Web Codes"] = ["htm", "html", "css", "js", "php", "xml"]
 
-#a=Index_generator(path)
-#file_mtime = os.path.getmtime(os.path.join(path, files[0]))
-#print(datetime.fromtimestamp(file_mtime),files[0])
-#b=Index_generator(path)
+#Searching for Cookie.txt file
+
+try:
+    cookies = open("Cookie.txt","r")
+except:
+    cookies = open("Cookie.txt","w")
+    cookies.write("False\n")
+    cookies.close()
+    cookies = open("Cookie.txt","r")
+
+#Reading Cookie.txt
+
+cookie=cookies.readlines()
+cookie_path=os.path.abspath("Cookie.txt")
+iconpath=(cookie_path.split("Cookie.txt"))[0]+"EasiIcon.ico"
+if cookie[0]=="False\n":
+    root = Tk()
+    root.title("Easi")
+    root.iconbitmap(iconpath)
+    try:
+        Label(root, text="Do you want pop-up notifications?").grid(row=0, sticky=W, padx=6, pady=6)
+        v = IntVar()
+        v.set(1)
+        def quit_loop():
+            global notification
+            notification = v.get()
+            if notification==1:
+                notification=True
+            else:
+                notification=False
+            root.quit()
+        Radiobutton(root, text="Yes", variable=v, value=1).grid(row=1, sticky=W)
+        Radiobutton(root, text="No", variable=v, value=2).grid(row=2, sticky=W)
+        Button(root, text='Next', command=quit_loop).grid(row=3, sticky=W, pady=4, padx=4)
+        mainloop()
+        root.withdraw()
+    except:
+        ctypes.windll.user32.MessageBoxW(0, "No Value Selected!", "Easi", 0)
+        raise SystemExit("Cancelling: No Value Selected!")
+    folder_selected = filedialog.askdirectory()
+    fname = folder_selected
+    if not fname:
+        cookies.close()
+        os.remove("Cookie.txt")
+        ctypes.windll.user32.MessageBoxW(0, "No Directory Supplied!", "Easi", 0)
+        raise SystemExit("Cancelling: No Directory supplied")
+    else:
+        path = str(fname)
+        cookies.close()
+        os.remove("Cookie.txt")
+        cookies = open("Cookie.txt","w")
+        cookies.writelines(["True\n",path,"\n"+str(notification)])
+        cookies.close()
+elif cookie[0]=="True\n":
+    path = str(cookie[1])
+    notification=bool(cookie[2])
+    cookies.close()
+
+#Service Started
+
+if notification:
+    toaster = ToastNotifier()
+    toaster.show_toast("Easi","Service Started",threaded=True,icon_path=iconpath,duration=None)
+
+#Main While Loop
+
 while True:
+
+    #Check for current time and date
+
     dt = datetime.today()
+
+    #Generate two indexes to compare
     a=Index_generator(path)
     time.sleep(1)
     b=Index_generator(path)
+
+    #Computing Difference
+
     data=compute_diff(b,a)
+
+    #Analysing Data
+
+    #If any file is deleted
     if data['deleted']!=[]:
-        #print("Deleted file : ",data['deleted'])
         if len(data['deleted'])==1:
-            #print(len(data['deleted']),"file deleted.")
-            toaster.show_toast("Easi",str(len(data['deleted']))+" file deleted.",threaded=True,icon_path=iconpath,duration=None)
+            if notification:
+                toaster.show_toast("Easi",str(len(data['deleted']))+" file deleted.",threaded=True,icon_path=iconpath,duration=None)
         else:
-            #print(len(data['deleted']),"files deleted.")
-            toaster.show_toast("Easi",str(len(data['deleted']))+" files deleted.",threaded=True,icon_path=iconpath,duration=None)
+            if notification:
+                toaster.show_toast("Easi",str(len(data['deleted']))+" files deleted.",threaded=True,icon_path=iconpath,duration=None)
     if data['created']!=[]:
         #print("Created file : ",data['created'])
         for file in data['created']:
@@ -135,8 +188,8 @@ while True:
                 for filetype in fileTypes.keys():
                     if ext in fileTypes[filetype]:
                         if ext=="crdownload":
-                            #print("Detected Downloading")
-                            toaster.show_toast("Easi","Download Started",threaded=True,icon_path=iconpath,duration=None)
+                            if notification:
+                                toaster.show_toast("Easi","Download Started",threaded=True,icon_path=iconpath,duration=None)
                         elif ext=="zip":
                             file2=path+"/"+str(file)
                             print("file2 : "+file2)
@@ -183,8 +236,8 @@ while True:
                                 print("file2 : "+file2)
                                 print("path3 : "+path3)
                                 os.rename(file2, path3)
-                                #print("Created file : ",path3)
-                                toaster.show_toast("Easi","File Downloaded : "+file,threaded=True,icon_path=iconpath,duration=None)
+                                if notification:
+                                    toaster.show_toast("Easi","File Downloaded : "+file,threaded=True,icon_path=iconpath,duration=None)
                             except OSError:
                                 #print("Created file : ",file2)
                                 os.rename(file2, path4)
@@ -246,16 +299,16 @@ while True:
                                 print("file2 : "+file2)
                                 print("path3 : "+path3)
                                 os.rename(file2, path3)
-                                #print("Created file : ",path3)
-                                toaster.show_toast("Easi","File Downloaded : "+file,threaded=True,icon_path=iconpath,duration=None)
+                                if notification:
+                                    toaster.show_toast("Easi","File Downloaded : "+file,threaded=True,icon_path=iconpath,duration=None)
                             except OSError:
                                 #print("Created file : ",file2)
                                 os.rename(file2, path4)
     if data['deleted_dirs']!=[]:
         #print("Deleted Directory : ",data['deleted_dirs'])
         if len(data['deleted_dirs'])==1:
-            #print(len(data['deleted_dirs']),"folder deleted.")
-            toaster.show_toast("Easi",str(len(data['deleted_dirs']))+" folder deleted.",threaded=True,icon_path=iconpath,duration=None)
+            if notification:
+                toaster.show_toast("Easi",str(len(data['deleted_dirs']))+" folder deleted.",threaded=True,icon_path=iconpath,duration=None)
         else:
-            #print(len(data['deleted_dirs']),"folders deleted.")
-            toaster.show_toast("Easi",str(len(data['deleted_dirs']))+" folders deleted.",threaded=True,icon_path=iconpath,duration=None)
+            if notification:
+                toaster.show_toast("Easi",str(len(data['deleted_dirs']))+" folders deleted.",threaded=True,icon_path=iconpath,duration=None)

@@ -1,4 +1,4 @@
-[![GitHub license](https://img.shields.io/github/license/LiquidatorCoder/Directory-Organizer?color=green&label=license)](https://github.com/LiquidatorCoder/Directory-Organizer/blob/master/LICENSE.md)
+[![GitHub license](https://img.shields.io/github/license/LiquidatorCoder/Directory-Organizer?color=green&label=license)](https://github.com/LiquidatorCoder/Directory-Organizer/blob/tkinter/LICENSE.md)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/LiquidatorCoder/Directory-Organizer?label=commits)
 # Easi File Organizer
 
