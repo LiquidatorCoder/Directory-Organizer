@@ -105,27 +105,52 @@ cookie_path=os.path.abspath("Cookie.txt")
 iconpath=(cookie_path.split("Cookie.txt"))[0]+"EasiIcon.ico"
 if cookie[0]=="False\n":
     root = Tk()
-    root.withdraw()
+    root.title("Easi")
+    root.iconbitmap(iconpath)
+    try:
+        Label(root, text="Do you want pop-up notifications?").grid(row=0, sticky=W, padx=6, pady=6)
+        v = IntVar()
+        v.set(1)
+        def quit_loop():
+            global notification
+            notification = v.get()
+            if notification==1:
+                notification=True
+            else:
+                notification=False
+            root.quit()
+        Radiobutton(root, text="Yes", variable=v, value=1).grid(row=1, sticky=W)
+        Radiobutton(root, text="No", variable=v, value=2).grid(row=2, sticky=W)
+        Button(root, text='Next', command=quit_loop).grid(row=3, sticky=W, pady=4, padx=4)
+        mainloop()
+        root.withdraw()
+    except:
+        ctypes.windll.user32.MessageBoxW(0, "No Value Selected!", "Easi", 0)
+        raise SystemExit("Cancelling: No Value Selected!")
     folder_selected = filedialog.askdirectory()
     fname = folder_selected
     if not fname:
-        ctypes.windll.user32.MessageBoxW(0, "No Directory Supplied!", "Cancel", 0)
+        cookies.close()
+        os.remove("Cookie.txt")
+        ctypes.windll.user32.MessageBoxW(0, "No Directory Supplied!", "Easi", 0)
         raise SystemExit("Cancelling: No Directory supplied")
     else:
         path = str(fname)
         cookies.close()
         os.remove("Cookie.txt")
         cookies = open("Cookie.txt","w")
-        cookies.writelines(["True\n",path])
+        cookies.writelines(["True\n",path,"\n"+str(notification)])
         cookies.close()
 elif cookie[0]=="True\n":
     path = str(cookie[1])
+    notification=bool(cookie[2])
     cookies.close()
 
 #Service Started
 
-toaster = ToastNotifier()
-toaster.show_toast("Easi","Service Started",threaded=True,icon_path=iconpath,duration=None)
+if notification:
+    toaster = ToastNotifier()
+    toaster.show_toast("Easi","Service Started",threaded=True,icon_path=iconpath,duration=None)
 
 #Main While Loop
 
@@ -149,11 +174,11 @@ while True:
     #If any file is deleted
     if data['deleted']!=[]:
         if len(data['deleted'])==1:
-            #print(len(data['deleted']),"file deleted.")
-            toaster.show_toast("Easi",str(len(data['deleted']))+" file deleted.",threaded=True,icon_path=iconpath,duration=None)
+            if notification:
+                toaster.show_toast("Easi",str(len(data['deleted']))+" file deleted.",threaded=True,icon_path=iconpath,duration=None)
         else:
-            #print(len(data['deleted']),"files deleted.")
-            toaster.show_toast("Easi",str(len(data['deleted']))+" files deleted.",threaded=True,icon_path=iconpath,duration=None)
+            if notification:
+                toaster.show_toast("Easi",str(len(data['deleted']))+" files deleted.",threaded=True,icon_path=iconpath,duration=None)
     if data['created']!=[]:
         #print("Created file : ",data['created'])
         for file in data['created']:
@@ -163,8 +188,8 @@ while True:
                 for filetype in fileTypes.keys():
                     if ext in fileTypes[filetype]:
                         if ext=="crdownload":
-                            #print("Detected Downloading")
-                            toaster.show_toast("Easi","Download Started",threaded=True,icon_path=iconpath,duration=None)
+                            if notification:
+                                toaster.show_toast("Easi","Download Started",threaded=True,icon_path=iconpath,duration=None)
                         elif ext=="zip":
                             file2=path+"/"+str(file)
                             print("file2 : "+file2)
@@ -211,8 +236,8 @@ while True:
                                 print("file2 : "+file2)
                                 print("path3 : "+path3)
                                 os.rename(file2, path3)
-                                #print("Created file : ",path3)
-                                toaster.show_toast("Easi","File Downloaded : "+file,threaded=True,icon_path=iconpath,duration=None)
+                                if notification:
+                                    toaster.show_toast("Easi","File Downloaded : "+file,threaded=True,icon_path=iconpath,duration=None)
                             except OSError:
                                 #print("Created file : ",file2)
                                 os.rename(file2, path4)
@@ -274,16 +299,16 @@ while True:
                                 print("file2 : "+file2)
                                 print("path3 : "+path3)
                                 os.rename(file2, path3)
-                                #print("Created file : ",path3)
-                                toaster.show_toast("Easi","File Downloaded : "+file,threaded=True,icon_path=iconpath,duration=None)
+                                if notification:
+                                    toaster.show_toast("Easi","File Downloaded : "+file,threaded=True,icon_path=iconpath,duration=None)
                             except OSError:
                                 #print("Created file : ",file2)
                                 os.rename(file2, path4)
     if data['deleted_dirs']!=[]:
         #print("Deleted Directory : ",data['deleted_dirs'])
         if len(data['deleted_dirs'])==1:
-            #print(len(data['deleted_dirs']),"folder deleted.")
-            toaster.show_toast("Easi",str(len(data['deleted_dirs']))+" folder deleted.",threaded=True,icon_path=iconpath,duration=None)
+            if notification:
+                toaster.show_toast("Easi",str(len(data['deleted_dirs']))+" folder deleted.",threaded=True,icon_path=iconpath,duration=None)
         else:
-            #print(len(data['deleted_dirs']),"folders deleted.")
-            toaster.show_toast("Easi",str(len(data['deleted_dirs']))+" folders deleted.",threaded=True,icon_path=iconpath,duration=None)
+            if notification:
+                toaster.show_toast("Easi",str(len(data['deleted_dirs']))+" folders deleted.",threaded=True,icon_path=iconpath,duration=None)
